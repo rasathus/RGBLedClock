@@ -1,9 +1,8 @@
 import datetime 
+import argparse
 
 from time import sleep
 from math import sin, pi
-
-from pigredients.ics import lpd6803 as lpd6803
 
 class rgb:
     """ rgb class for storing 3-part rgb colour values """
@@ -17,6 +16,11 @@ class rgb:
 
 SINE = "sine"
 LINEAR = "linear"
+# Currently supported led drivers
+valid_led_drivers = ['ws2801','lpd6803']
+# Removed lpd8806 until testing complete.
+#valid_led_drivers = ['ws2801','lpd6803','lpd8806']
+
 def interpolate(val, op0, op1, curve=LINEAR):
     """ interpolate an input between two given output values. supports linear and sine curves """
     diff = op1-op0
@@ -66,7 +70,32 @@ def getclock(when):
     return clock
 
 if __name__ == "__main__":
-    led_chain = lpd6803.LPD6803_Chain(ics_in_chain=12)
+
+    parser = argparse.ArgumentParser(description='RGB LED Clock.')
+
+    parser.add_argument('--type', action="store", dest="driver_type", required=False, help='The model number of the LED driver, eg. ws2801 or lpd6803. defaults to configuration file.')
+
+    args = parser.parse_args()
+
+    if args.driver_type is not None:
+        if args.driver_type.lower() in valid_led_drivers:
+            driver_type = args.driver_type.lower()
+        else:
+            raise Exception("Invalid LED Driver %s specified, implemented types are : %s" % (args.driver_type, valid_led_drivers))
+    else:
+        # default to lpd6803 for compatibility with argumentless syntax.
+        driver_type = 'lpd6803'
+
+    if driver_type == 'ws2801':
+        from pigredients.ics import ws2801 as ws2801
+        led_chain = ws2801.WS2801_Chain(ics_in_chain=12)
+    elif driver_type == 'lpd6803':
+        from pigredients.ics import lpd6803 as lpd6803
+        led_chain = lpd6803.LPD6803_Chain(ics_in_chain=12)
+    #elif driver_type == 'lpd8806':
+    #    from pigredients.ics import lpd8806 as lpd8806
+    #    led_chain = lpd8806.LPD8806_Chain(ics_in_chain=12)
+
     while True:
         now = datetime.datetime.now()
         clock = getclock(now)

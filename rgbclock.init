@@ -1,0 +1,42 @@
+#! /bin/sh
+# /etc/init.d/rgbclock
+#
+
+clock_path='/opt/rgbclock'
+startup_args='--type lpd6803'
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting Clock ..."
+    /usr/bin/python ${clock_path}/clock.py ${startup_args} > /dev/null 2>&1 &
+    pid=$!
+    echo $pid > /var/run/rgbclock.pid
+    ;;
+  stop)
+    echo "Stopping Clock ..."
+    if [ -e /var/run/rgbclock.pid ]; then
+        /bin/kill -s sigterm $(cat /var/run/rgbclock.pid)
+        /bin/rm /var/run/rgbclock.pid
+    fi
+    ;;
+  restart)
+    echo "Restarting Clock ..."
+    echo "Stopping Clock ..."
+    if [ -e /var/run/rgbclock.pid ]; then
+      /bin/kill -s sigterm $(cat /var/run/rgbclock.pid)
+      /bin/rm /var/run/rgbclock.pid
+    fi
+    sleep 1
+    echo "Starting Clock ..."
+    /usr/bin/python ${clock_path}/clock.py ${startup_args} > /dev/null 2>&1 &
+    pid=$!
+    echo $pid > /var/run/rgbclock.pid
+    ;;
+  *)
+    echo "Usage: /etc/init.d/rgbclock {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
