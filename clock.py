@@ -26,11 +26,11 @@ valid_led_drivers = ['ws2801', 'lpd6803', 'lpd8806']
 
 def interpolate(val, op0, op1, curve=LINEAR):
     # interpolate an input between two given output values. supports linear and sine curves
-    diff = op1-op0
+    diff = op1 - op0
     if curve == LINEAR:
-        rtn = op0+(diff*val)
+        rtn = op0 + (diff * val)
     elif curve == SINE:
-        rtn = op0+(diff*sin(val*pi*.5))
+        rtn = op0 + (diff * sin(val * pi * .5))
     else:
         raise Exception("can't interpolate with a curve of type [%s]" % curve)
     return rtn
