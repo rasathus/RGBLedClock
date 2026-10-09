@@ -1,0 +1,3 @@
+spidev
+# pigredients is not on PyPI; Python 3 support needs rasathus/pigredients#7 (see README)
+git+https://github.com/rasathus/pigredients.git

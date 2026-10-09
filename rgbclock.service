@@ -1,0 +1,27 @@
+[Unit]
+Description=Raspberry Pi 12-LED RGB clock
+After=time-sync.target
+Wants=time-sync.target
+
+[Service]
+Type=simple
+# Dedicated unprivileged user. /dev/spidev* is owned by group "spi" on
+# Raspberry Pi OS, so SupplementaryGroups=spi is all the access it needs.
+# Create it with: sudo useradd --system --no-create-home --shell /usr/sbin/nologin -G spi rgbclock
+User=rgbclock
+SupplementaryGroups=spi
+ExecStart=/usr/bin/python3 /opt/rgbclock/clock.py --type lpd6803
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
+
+# Hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+DevicePolicy=closed
+DeviceAllow=/dev/spidev0.0 rw
+
+[Install]
+WantedBy=multi-user.target
