@@ -11,9 +11,11 @@ The RGB clock project can be used to drive 12 LEDs, which when positioned in a c
 - [`spidev`](https://pypi.org/project/spidev/) and the author's
   [`pigredients`](https://github.com/rasathus/pigredients) library (not on PyPI)
 
-Known prerequisite: `pigredients` is itself currently Python 2 only (print
-statements, mixed tabs/spaces). Until that is fixed upstream, a Python 3 compatible
-copy is needed for the hardware to work. `--dry-run` does not need it.
+Known prerequisite: `pigredients` needs its Python 3 port
+([rasathus/pigredients#7](https://github.com/rasathus/pigredients/pull/7)).
+Until that is merged, install it from that branch:
+`pip install git+https://github.com/rasathus/pigredients.git@claude/dreamy-babbage-61tlx8`.
+`--dry-run` does not need it.
 
 ## Install
 
