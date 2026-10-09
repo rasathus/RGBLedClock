@@ -1,0 +1,3 @@
+spidev
+# pigredients is not on PyPI, and is currently Python 2 only upstream (see README)
+git+https://github.com/rasathus/pigredients.git
